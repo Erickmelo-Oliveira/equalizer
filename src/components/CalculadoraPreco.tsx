@@ -27,10 +27,12 @@ export function CalculadoraPreco({ materiais, onAddCalculo }: CalculadoraPrecoPr
 
     const quantidade = parseFloat(formData.quantidade);
     const margemLucro = parseFloat(formData.margemLucro);
-    
+if (isNaN(quantidade) || quantidade <= 0 || isNaN(margemLucro) || margemLucro < 0 || margemLucro >= 100) {
+  alert('Informe uma quantidade maior que 0 e uma margem entre 0 e 99.');
+  return;
+}    
     const custoTotal = quantidade * material.custoPorKg;
-    const precoVenda = custoTotal * (1 + margemLucro / 100);
-
+const precoVenda = custoTotal / (1 - margemLucro / 100);
     setResultado({ custoTotal, precoVenda });
 
     const calculo: Omit<Calculo, 'id' | 'createdAt'> = {

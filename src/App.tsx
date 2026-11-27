@@ -5,19 +5,13 @@ import { MaterialForm } from './components/MaterialForm';
 import { MaterialList } from './components/MaterialList';
 import { CalculadoraPreco } from './components/CalculadoraPreco';
 import { Historico } from './components/Historico';
-import { UserRegistration } from './components/UserRegistration';
-import { LoginForm } from './components/LoginForm';
-import { UserProfile } from './components/UserProfile';
-import { useAuth } from './hooks/useAuth';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { Material, Calculo } from './types';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
   const [materiais, setMateriais] = useLocalStorage<Material[]>('materiais', []);
   const [calculos, setCalculos] = useLocalStorage<Calculo[]>('calculos', []);
-  const { user, loading } = useAuth();
 
   const handleAddMaterial = (materialData: Omit<Material, 'id' | 'createdAt'>) => {
     const newMaterial: Material = {
@@ -62,13 +56,11 @@ function App() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'dashboard':
-        return <Dashboard materiais={materiais} calculos={calculos} onDeleteCalculo={handleDeleteCalculo} />;
       case 'materiais':
         return (
           <div className="space-y-8">
-            <MaterialForm 
-              onAddMaterial={handleAddMaterial} 
+            <MaterialForm
+              onAddMaterial={handleAddMaterial}
               onAddMultipleMaterials={handleAddMultipleMaterials}
             />
             <MaterialList materiais={materiais} onDeleteMaterial={handleDeleteMaterial} />
@@ -78,46 +70,11 @@ function App() {
         return <CalculadoraPreco materiais={materiais} onAddCalculo={handleAddCalculo} />;
       case 'historico':
         return <Historico calculos={calculos} onDeleteCalculo={handleDeleteCalculo} />;
-      case 'registro':
-        if (user) {
-          setActiveTab('dashboard');
-          return null;
-        }
-        return authMode === 'register' ? (
-          <UserRegistration 
-            onBack={() => setActiveTab('dashboard')} 
-            onSuccess={() => setActiveTab('dashboard')}
-            onSwitchToLogin={() => setAuthMode('login')}
-          />
-        ) : (
-          <LoginForm
-            onBack={() => setActiveTab('dashboard')}
-            onSuccess={() => setActiveTab('dashboard')}
-            onSwitchToRegister={() => setAuthMode('register')}
-          />
-        );
-      case 'perfil':
-        if (!user) {
-          setActiveTab('registro');
-          return null;
-        }
-        return (
-          <UserProfile 
-            onBack={() => setActiveTab('dashboard')} 
-          />
-        );
+      case 'dashboard':
       default:
         return <Dashboard materiais={materiais} calculos={calculos} onDeleteCalculo={handleDeleteCalculo} />;
     }
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
 
   return (
     <Layout activeTab={activeTab} onTabChange={setActiveTab}>

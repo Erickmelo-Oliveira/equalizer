@@ -5,22 +5,33 @@ Sistema web de precificação para pequenos negócios: cadastre materiais, calcu
 🔗 **Site:** https://projeto-equalizer.netlify.app/
 
 ## Sobre o projeto
+
 A primeira versão foi gerada com apoio de IA (Bolt). Depois disso, estou estudando o código e fazendo as mudanças por conta própria, com um commit para cada alteração.
 
 ## O que eu já fiz
+
 - Corrigi o cálculo da margem: ela agora é sobre o preço de venda (preço = custo ÷ (1 − margem)), e não um markup sobre o custo
 - Adicionei validação nos campos (quantidade e margem)
+- Removi o login e a integração com o Supabase: o sistema agora funciona sem cadastro e sem serviço externo
+- Removi o sistema de planos e as dependências que não eram mais usadas
 
 ## Em andamento
-- [ ] Remover o login (que dependia de um serviço externo) e deixar os dados no navegador
+
+- [x] Remover o login (que dependia de um serviço externo) e deixar os dados no navegador
 - [ ] Revisar o histórico e o painel
 - [ ] Refazer o visual
 
 ## Tecnologias
+
 React · TypeScript · Vite · Tailwind CSS
 
 ## Como rodar
+
 ```bash
 npm install
 npm run dev
 ```
+
+## Observação
+
+Os dados (materiais e cálculos) ficam salvos no navegador, via `localStorage`. Isso significa que não são compartilhados entre aparelhos e que limpar os dados do navegador apaga o histórico.
